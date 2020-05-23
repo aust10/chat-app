@@ -1,7 +1,9 @@
-const path = require('path')
-const fs = require('fs')
 const express = require('express')
 const app = express()
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
+const path = require('path')
+const fs = require('fs')
 
 const messagesPath = './messages.txt'
 
@@ -20,27 +22,30 @@ app.get('/messages', (req, res) => {
       return res.send(err)
     }
 
-    // console.log(data.split('\n').filter(line => line), 'this is text')
-
-    // res.send sets the header information
     const jsonData = data.split('\n').filter(line => line).map(JSON.parse)
-
     res.json(jsonData)
-
- 
-  
   })
 })
 
 // serve post
 app.post('/messages', (req, res) => {
-  console.log(JSON.stringify(req.body), 'this is req.body')
-  console.log(Object.keys(req.body), 'keys of the object')
+  // console.log(JSON.stringify(req.body), 'this is req.body')
+  // console.log(Object.keys(req.body), 'keys of the object')
   fs.appendFile(messagesPath, JSON.stringify(req.body) + '\n', (err) => {
     if (err) return res.send(err)
   })
   res.send(req.body)
 })
 
-app.listen(8000)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'static'))
+})
+
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    console.log('message ' + msg)
+  })
+})
+
+http.listen(8000)
 console.log('listening on 8000')

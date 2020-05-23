@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "http-hash-router": "^2.0.1",
+    "socket.io": "^2.3.0",
     "st": "^2.0.0",
     "watchify": "^3.11.1",
     "yo-yo": "^1.4.1"
