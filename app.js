@@ -28,14 +28,21 @@ app.get('/messages', (req, res) => {
 })
 
 // serve post
-app.post('/messages', (req, res) => {
-  // console.log(JSON.stringify(req.body), 'this is req.body')
-  // console.log(Object.keys(req.body), 'keys of the object')
-  fs.appendFile(messagesPath, JSON.stringify(req.body) + '\n', (err) => {
-    if (err) return res.send(err)
+// app.post('/messages', (req, res) => {
+//   // console.log(JSON.stringify(req.body), 'this is req.body')
+//   // console.log(Object.keys(req.body), 'keys of the object')
+//   fs.appendFile(messagesPath, JSON.stringify(req.body) + '\n', (err) => {
+//     if (err) return res.send(err)
+//   })
+//   res.send(req.body)
+// })
+
+function WriteMessage (message) {
+  fs.appendFile(messagesPath, JSON.stringify(message) + '\n', (err) => {
+    if (err) return 'error'
   })
-  res.send(req.body)
-})
+  return 'success'
+}
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'static'))
@@ -43,7 +50,9 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
-    console.log('message ' + msg)
+    io.emit('chat message', msg)
+    const didWrite = WriteMessage(msg)
+    console.log('did write ' + didWrite + ' ' + msg)
   })
 })
 

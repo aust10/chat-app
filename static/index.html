@@ -13,19 +13,6 @@
     </form>
 
     <script src="bundle.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script>
-    $(function () {
-      var socket = io()
-      $('form').submit(function(e) {
-        e.preventDefault()
-        socket.emit('chat message', $('#message-text').val())
-        $('#message-text').val('')
-        return false
-      })
-    })
-    </script>
   </body>  
 </html>
 
