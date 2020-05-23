@@ -1,12 +1,9 @@
 const path = require('path')
 const fs = require('fs')
-// const bodyParse = require('body-parser')
 const express = require('express')
 const app = express()
 
 const messagesPath = './messages.txt'
-
-// app.use(express.static(''))
 
 // set the middleware
 app.use(express.json())
@@ -17,15 +14,21 @@ app.use(express.static(staticPath))
 
 // serve Get
 app.get('/messages', (req, res) => {
-  fs.readFile(messagesPath, 'utf8', (err, messages) => {
+  fs.readFile(messagesPath, 'utf8', (err, data) => {
     if (err) {
-      console.log(`unable to read file this is ${messagePath}`)
+      console.log(`unable to read file this is ${messagesPath}`)
       return res.send(err)
     }
-    // res.json(messages)
 
-    // console.log(messages.split('\n').filter(line => line))
-    res.json(messages.split('\n').filter(line => line))
+    // console.log(data.split('\n').filter(line => line), 'this is text')
+
+    // res.send sets the header information
+    const jsonData = data.split('\n').filter(line => line).map(JSON.parse)
+
+    res.json(jsonData)
+
+ 
+  
   })
 })
 

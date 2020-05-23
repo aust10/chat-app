@@ -20,7 +20,6 @@ function postMessage (text, nick, room) {
 function getMessages () {
   return fetch('/messages')
     .then(response => response.json())
-    .then(data => console.log(data))
 }
 
 module.exports = {
