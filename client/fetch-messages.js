@@ -17,11 +17,11 @@
 //     })
 // }
 
-function getMessages () {
-  return fetch('/messages')
-    .then(response => response.json())
-}
+// function getMessages () {
+//   return fetch('/messages')
+//     .then(response => response.json())
+// }
 
-module.exports = {
-  getMessages
-}
+// module.exports = {
+//   getMessages
+// }

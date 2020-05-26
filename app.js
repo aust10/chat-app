@@ -23,7 +23,7 @@ app.get('/messages', (req, res) => {
     }
 
     const jsonData = data.split('\n').filter(line => line).map(JSON.parse)
-    res.json(jsonData)
+    return res.json(jsonData)
   })
 })
 
@@ -44,15 +44,21 @@ function WriteMessage (message) {
   return 'success'
 }
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'static'))
-})
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'static'))
+// })
 
 io.on('connection', (socket) => {
+  console.log('a user connected')
+
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg)
     const didWrite = WriteMessage(msg)
     console.log('did write ' + didWrite + ' ' + msg)
+  })
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
   })
 })
 

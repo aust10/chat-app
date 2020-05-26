@@ -1,5 +1,5 @@
 /* globals prompt */
-const { getMessages } = require('./fetch-messages')
+// const { getMessages } = require('./fetch-messages')
 const { Chat } = require('./components')
 const yo = require('yo-yo')
 const io = require('socket.io-client')
@@ -11,8 +11,12 @@ const nickname = prompt('Enter your nickname:')
 // set up a listner for chat message
 // socket.on('chat message, msg => something)
 // this something will be update state passing in new array state.messages.concat message
+socket.on('chat message', msg => {
+  console.log('Got a message:', msg)
+  updateState('messages', state.messages.concat(msg))
+})
 
-// this is omited by the above 
+// this is omited by the above
 // function refresh () {
 //   getMessages()
 //     .then(data => {
@@ -28,7 +32,8 @@ sendForm.onsubmit = evt => {
   // const message = { text: messageTextField.value, nick: nickname, room: state.room, date: new Date() }
   // socket.emit('chat message', message)
   // make the message object {text nick room date}
-  socket.emit('chat message', messageTextField.value, nickname, state.room)
+  const message = { text: messageTextField.value, nick: nickname, room: state.room, date: new Date() }
+  socket.emit('chat message', message)
   console.log(messageTextField.value, nickname, state.room)
   // postMessage(messageTextField.value, nickname, state.room)
 }
@@ -46,5 +51,12 @@ function updateState (key, value) {
 const el = Chat(state.messages, state.room, updateState)
 const chatContainer = document.getElementById('chat-container')
 chatContainer.appendChild(el)
+
+fetch('/messages')
+  .then(response => response.json())
+  .then(data => {
+    console.log('fetched data from the server')
+    updateState('messages', data)
+  })
 
 // setInterval(refresh, 500)
